@@ -2,7 +2,8 @@ const express = require("express");
 const morgan = require("morgan");
 
 class Server {
-  constructor() {
+  constructor(port) {
+    this.port = process.env.PORT || port; //toma el puerto del sistema o del index.
     this.app = express();
   }
 
