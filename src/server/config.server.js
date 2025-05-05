@@ -7,6 +7,8 @@ class Server {
   constructor(port) {
     this.port = process.env.PORT || port; //toma el puerto del sistema o del index.
     this.app = express();
+    this.middlewares();
+    this.routes();
   }
 
   middlewares() {
@@ -16,7 +18,7 @@ class Server {
   }
 
   routes() {
-    this.app.use("/api", require("./routes/index.routes")); //el api es el identificador de rutas backend.
+    this.app.use("/api", require("../routes/index.routes")); //el api es el identificador de rutas backend.
   }
 
   listen() {

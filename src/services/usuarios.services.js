@@ -1,5 +1,6 @@
 const argon = require("argon2");
 const UsuariosModel = require("../models/usuarios.model");
+const jwt = require("jsonwebtoken");
 
 const obtenerTodosLosUsuariosBD = async () => {
   try {
@@ -87,10 +88,66 @@ const eliminarUsuarioBD = async (idUsuario) => {
   }
 };
 
+const iniciarSesionUsuarioDB = async (body) => {
+  try {
+    const usuarioExiste = await UsuariosModel.findOne({
+      nombreUsuario: body.nombreUsuario,
+    });
+
+    if (!usuarioExiste) {
+      return {
+        msg: "El usuario y/o contraseña es incorrecto. USUARIO",
+        statusCode: 409,
+      };
+    }
+
+    if (usuarioExiste.estado === "deshabilitado") {
+      return {
+        msg: "El usuario está bloqueado",
+        statusCode: 400,
+      };
+    }
+
+    console.log(usuarioExiste);
+
+    const verificarContrasenia = await argon.verify(
+      usuarioExiste.contrasenia,
+      body.contrasenia
+    );
+
+    if (verificarContrasenia) {
+      const payload = {
+        idUsuario: usuarioExiste._id,
+        rolUsuario: usuarioExiste.rol,
+      };
+
+      const token = jwt.sign(payload, process.env.JWT_SECRET);
+
+      return {
+        msg: "El usuario se logupo correctamente",
+        token,
+        statusCode: 200,
+      };
+    } else {
+      return {
+        msg: "El usuario y/o contraseña es incorrecto. CONTRASEÑA",
+        statusCode: 409,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      error,
+      statusCode: 500,
+    };
+  }
+};
+
 module.exports = {
   obtenerTodosLosUsuariosBD,
   obtenerUnUsuarioBD,
   crearUsuarioBD,
   editarUsuarioBD,
   eliminarUsuarioBD,
+  iniciarSesionUsuarioDB,
 };
