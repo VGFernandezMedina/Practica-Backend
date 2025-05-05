@@ -14,7 +14,7 @@ class Server {
   }
 
   routes() {
-    this.app.use("/api", require("./routes/indes.routes"));
+    this.app.use("/api", require("./routes/index.routes")); //el api es el identificador de rutas backend.
   }
 
   listen() {
