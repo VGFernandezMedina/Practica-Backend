@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-
 const UsuariosSchema = new Schema({
   nombreUsuario: {
     type: String,
@@ -7,8 +6,6 @@ const UsuariosSchema = new Schema({
     required: true,
     unique: true,
     lowerCase: true,
-    maxLength: [30, "Limite maximo 30 caracteres"],
-    minLength: [3, "Limite minimo es 3 caracteres"],
   },
   emailUsuario: {
     type: String,
@@ -19,7 +16,6 @@ const UsuariosSchema = new Schema({
   },
   contrasenia: {
     type: String,
-    minLength: [8, "Limite minimo es 8 caracteres"],
   },
   estado: {
     type: String,
